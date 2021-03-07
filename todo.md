@@ -1,0 +1,19 @@
+- Today
+  - [ ] Turn order
+  - [ ] Enemy movement
+  - [ ] Orb pickup
+  - [ ] Orb shooting
+  - [ ] Health
+  - [ ] Death
+- Later
+  - [ ] Work on dungeon generation. The goal is to have a limited amount of floors with some rooms, an exit and an entrance each.
+    - [ ] Read https://www.rockpapershotgun.com/how-do-roguelikes-generate-levels
+    - [ ] Work on generating individual rooms
+    - [ ] Combine the rooms
+    - [ ] Connect the rooms
+    - [ ] A chance to add chasms to the biggest rooms
+    - [ ] Postprocess to add
+      - [ ] Exit
+      - [ ] Entrance
+      - [ ] Enemy spawn points
+      - [ ] 
