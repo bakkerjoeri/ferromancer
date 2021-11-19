@@ -20,8 +20,10 @@
 	},
 	"dependencies": {
 		"@bakkerjoeri/array-without": "^2.0.2",
+		"@bakkerjoeri/repeat": "^1.0.0",
 		"@bakkerjoeri/uuid": "^1.0.0",
 		"dotspace": "^1.1.0",
-		"heks": "^2.7.4"
+		"heks": "^2.7.5",
+		"roll-the-bones": "^1.1.0"
 	}
 }

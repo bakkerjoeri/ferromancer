@@ -7,6 +7,6 @@ module.exports = {
     '@snowpack/plugin-typescript',
   ],
   mount: {
-    'src': '/',
+    'src2': '/',
   }
 };

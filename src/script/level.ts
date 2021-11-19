@@ -1,14 +1,30 @@
-import uuid from "@bakkerjoeri/uuid";
+import arrayWithout from "@bakkerjoeri/array-without";
 import { add } from "dotspace";
-import { createSpriteComponent } from "heks";
-import { State } from "./main";
-import type { Entity, GameObject, Position } from "./types";
+import { createSpriteComponent, setEntity } from "heks";
+import { createEntity, createWall } from "./entities";
+import { createActor } from "./actors";
+import type { State } from "./main";
+import type { Entity } from "heks";
+import type { Position } from "./types";
+import { createNpc } from "./npc";
+import { createPlayer } from "./player";
 
 export interface Tile {
 	position: Position;
-	type: 'floor' | 'wall' | 'chasm';
-	entities: GameObject['id'][];
+	type: 'floor' | 'chasm';
+	entities: Entity['id'][];
 }
+
+export const DIRECTION_NORTH     = [0, -1];
+export const DIRECTION_NORTHEAST = [1, -1];
+export const DIRECTION_EAST      = [1, 0];
+export const DIRECTION_SOUTHEAST = [1, 1];
+export const DIRECTION_SOUTH     = [0, 1];
+export const DIRECTION_SOUTHWEST = [-1, 1];
+export const DIRECTION_WEST      = [-1, 0];
+export const DIRECTION_NORTHWEST = [-1, -1];
+
+export const cardinalDirections = [DIRECTION_NORTH, DIRECTION_EAST, DIRECTION_SOUTH, DIRECTION_WEST];
 
 export function setupLevel(state: State, level: string): State {
 	const tiles: Tile[] = [];
@@ -22,12 +38,9 @@ export function setupLevel(state: State, level: string): State {
 		}
 
 		if (character === '#') {
-			const wallEntity = {
-				id: uuid(),
-				isSolid: true,
+			const wallEntity = createWall({
 				tilePosition: position,
-				sprite: createSpriteComponent('wall'),
-			}
+			});
 
 			entities[wallEntity.id] = wallEntity;
 
@@ -43,13 +56,9 @@ export function setupLevel(state: State, level: string): State {
 				entities: [],
 			});
 		} else if (character === '@') {
-			const playerEntity = {
-				id: uuid(),
-				isSolid: true,
-				isPlayerControlled: true,
+			const playerEntity = createPlayer({
 				tilePosition: position,
-				sprite: createSpriteComponent('ferromancer'),
-			}
+			});
 
 			entities[playerEntity.id] = playerEntity;
 
@@ -57,6 +66,34 @@ export function setupLevel(state: State, level: string): State {
 				position,
 				type: 'floor',
 				entities: [playerEntity.id],
+			});
+		} else if (character === 't') {
+			const transporterBot = createNpc({
+				isSolid: true,
+				tilePosition: position,
+				sprite: createSpriteComponent('transporter-bot'),
+			});
+
+			entities[transporterBot.id] = transporterBot;
+
+			tiles.push({
+				position,
+				type: 'floor',
+				entities: [transporterBot.id],
+			});
+		} else if (character === 'c') {
+			const transporterBot = createEntity({
+				isSolid: false,
+				tilePosition: position,
+				sprite: createSpriteComponent('core'),
+			});
+
+			entities[transporterBot.id] = transporterBot;
+
+			tiles.push({
+				position,
+				type: 'floor',
+				entities: [transporterBot.id],
 			});
 		} else {
 			tiles.push({
@@ -80,4 +117,37 @@ export function setupLevel(state: State, level: string): State {
 			...entities,
 		},
 	};
+}
+
+export const moveEntityToTile = (entity: Entity & {tilePosition: Position}, toTile: Tile, previousTile?: Tile) => (state: State) => {
+	state = {
+		...state,
+		tiles: state.tiles.map(tile => {
+			if (tile === previousTile) {
+				return {
+					...tile,
+					entities: arrayWithout(tile.entities, entity.id),
+				}
+			}
+
+			if (tile === toTile) {
+				return {
+					...tile,
+					entities: [
+						...tile.entities,
+						entity.id,
+					]
+				}
+			}
+
+			return tile;
+		})
+	}
+
+	state = setEntity({
+		...entity,
+		tilePosition: [...toTile.position],
+	})(state);
+
+	return state;
 }

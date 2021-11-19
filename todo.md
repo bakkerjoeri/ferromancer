@@ -1,6 +1,6 @@
 - Today
-  - [ ] Turn order
-  - [ ] Enemy movement
+  - [x] Turn order
+  - [x] Enemy movement
   - [ ] Orb pickup
   - [ ] Orb shooting
   - [ ] Health
@@ -16,4 +16,5 @@
       - [ ] Exit
       - [ ] Entrance
       - [ ] Enemy spawn points
-      - [ ] 
+  - [ ] Add vim (kljh), WASD and numeric keys (8624)
+  - [ ] 
